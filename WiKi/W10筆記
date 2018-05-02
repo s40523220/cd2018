@@ -1,3 +1,6 @@
+未來幾週要做的事情
+
+
 W10 兩段式六連桿提球機構設計與模擬
 
 下載 Pyslvs
@@ -13,3 +16,29 @@ W10 兩段式六連桿提球機構設計與模擬
 W10 延伸加分題
 
 能否利用 Pyslvs, 在此一兩組六連桿機構, 再疊加一組六連桿機構, 成為三段式提球機構設計?
+
+W11 - 12 週減速齒輪組設計
+
+請各組在 W12 週上課前, 估算各組利用實驗室所提供的直流馬達, 推動 W10 所完成的兩段或三段式提球機構系統, 所需的減速齒輪組.
+
+W11 - W12 延伸加分題一
+
+利用網際程式設計模擬所完成的減速齒輪組
+
+W11 - W12 延伸加分題二
+
+實作所完成的減速齒輪組
+
+W14 三輪搬運車
+
+
+請參考 https://github.com/mdecourse/cd2018/blob/gh-pages/v-rep/car_simulation/AntzResearch1.ttt 中的三輪行走車與感測器配置設
+
+計, 以及 https://github.com/mdecourse/cd2018/blob/gh-pages/v-rep/car_simulation/cars.ttt 中, 利用鍵盤 arrow 鍵控制轉向與加減
+
+速的設計, 在 W14 週前, 完成從各組的鋼球循環運動系統, 將球載運至其他循環系統的設計與模擬.
+
+
+各組 W14 上課前繳交內容: cd_w14_ag1.slvs 或其他 CAD 系統 (OnShape, Solidworks, Inventor, Creo 等) 零組件檔案, cd_w14_ag1.ttt 
+
+以及 Youtube 上的模擬影片.
