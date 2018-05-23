@@ -8,7 +8,11 @@ window.onload=function(){
 brython({debug:1, pythonpath:['./../data/py']});
 }
 </script>
-<script type="text/python">
+<!-- 以下實際利用  Brython 繪圖-->
+
+<canvas id="onegear" width="800" height="600"></canvas>
+
+<script type="text/python3">
 from browser import document as doc
 import math
 # deg 為角度轉為徑度的轉換因子
@@ -139,26 +143,6 @@ n = 53
 # 壓力角
 pa = 20
 Spur(ctx).Gear(x, y, r, n, pa, "blue")
-# 以下列出 W11 2B 與 2A 未出席人數
-data = open("./../data/w11/2b0503.txt", encoding="utf-8").read()
-data1 = open("./../data/w11/2a0504.txt", encoding="utf-8").read()
-count = 0
-count1 = 0
-# 去掉前面兩列
-student = data.split("\n")[2:]
-student1 = data1.split("\n")[2:]
-for i in range(len(student)):
-    each = student[i].split("\t")
-    # 請注意, Brython 在 Windows 環境無法正確判定字串, 原因不明
-    if each[1] != "出席":
-        count = count + 1
-for i in range(len(student1)):
-    each1 = student1[i].split("\t")
-    if each1[1] != "present":
-        count1 = count1 + 1
-div = doc["onegear_div"]
-div <= "2b: " +  str(count) + "/" + str(len(student)) + "|" + "2a: " +  str(count1) + "/" + str(len(student1))
-</script>
 </script>
 <script src="../data/Brython-3.5.1/brython.js"></script>
 <script src="../data/Brython-3.5.1/brython_stdlib.js"></script>
