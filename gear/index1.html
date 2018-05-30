@@ -16,8 +16,6 @@ brython({debug:1, pythonpath:['./../data/py']});
 
 <p><input id="n1" value="13"></input><br />
 <input id="n2" value="11"></input><br />
-<input id="n3" value="17"></input><br />
-<button id="button">Set Number of Gears</button></p>
 <script type="text/python3">
 from browser import document as doc
 from browser import html
@@ -158,10 +156,7 @@ def setgearnumber(e):
     else:
         n11 = 11
 
-    if doc["n3"].value.isdigit():
-        n13 = int(doc["n3"].value)
-    else:
-        n13 = 13
+ 
 
     # 只使用畫布高度的 80%
     canvas_size = canvas.height*0.4
@@ -174,9 +169,6 @@ def setgearnumber(e):
 
     x11 = x 
     y11 = y
-
-    x13 = x + r11+r13
-    y13 = y
 
     pa = 20
     # 開始繪製齒輪
@@ -216,7 +208,6 @@ div = doc["onegear_div"]
 form = html.FORM()
 input1 = html.INPUT(type="text", id="n1", name="n1", value="13")
 input2 = html.INPUT(type="text", id="n2", name="n2", value="11")
-input3 = html.INPUT(type="text", id="n3", name="n3", value="19")
 div <= input1 + html.BR() + input2 + html.BR() + input3
 ''
 doc['button'].bind('click',setgearnumber)
