@@ -142,64 +142,6 @@ class Spur(object):
 canvas = doc['onegear']
 ctx = canvas.getContext("2d")
 
-# 以 button 驅動的事件函式
-def setgearnumber(e):
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    x = (canvas.width)/2
-    y = (canvas.height)/2
-    if doc["n1"].value.isdigit():
-        n17 = int(doc["n1"].value)
-    else:
-        n17 = 17
-
-    if doc["n2"].value.isdigit():
-        n11 = int(doc["n2"].value)
-    else:
-        n11 = 11
-
-    # 只使用畫布高度的 80%
-    canvas_size = canvas.height*0.4
-    r17 = canvas_size*n17/(n17+n11+n13)
-    r11 = canvas_size*n11/(n17+n11+n13)
-    # 計算各齒輪中心座標
-    x17 = x - r17-r11
-    y17 = y
-
-    x11 = x 
-    y11 = y
-
-    pa = 20
-    # 開始繪製齒輪
-    # 儲存原有的座標系統
-    ctx.save()
-    # 平移到齒輪圓心
-    ctx.translate(x17, y17)
-    # 以齒輪圓心旋轉 90 度, 讓紅色標線在齒輪右側保持水平
-    ctx.rotate(90*deg)
-    # 平移回原來的座標原點
-    ctx.translate(-x17, -y17)
-    gear17 = Spur(ctx).Gear(x17, y17, r17, n17, pa, "blue")
-    # 回復原有的座標系統
-    ctx.restore()
-
-    ctx.save()
-    ctx.translate(x11, y11)
-    # 中間齒輪轉動 -90 度加上一齒, 可以與左側齒輪囓合
-    ctx.rotate(-90*deg-math.pi/n11)
-    ctx.translate(-x11, -y11)
-    gear11 = Spur(ctx).Gear(x11, y11, r11, n11, pa, "blue")
-    ctx.restore()
-
-setgearnumber(True)
-
-'''
-div = doc["onegear_div"]
-form = html.FORM()
-input1 = html.INPUT(type="text", id="n1", name="n1", value="13")
-input2 = html.INPUT(type="text", id="n2", name="n2", value="11")
-div <= input1 + html.BR() + input2 + html.BR() + input3
-'''
-doc['button'].bind('click',setgearnumber)
 </script>
 <script src="Brython-3.5.1/brython.js"></script>
 <script src="Brython-3.5.1/brython_stdlib.js"></script>
