@@ -16,6 +16,7 @@ brython({debug:1, pythonpath:['./']});
 
 <p><input id="n1" value="13"></input><br />
 <input id="n2" value="11"></input><br />
+<input id="n3" value="17"></input><br />
 <button id="button">Set Number of Gears</button></p>
 <script type="text/python3">
 from browser import document as doc
@@ -157,16 +158,25 @@ def setgearnumber(e):
     else:
         n11 = 11
 
+    if doc["n3"].value.isdigit():
+        n13 = int(doc["n3"].value)
+    else:
+        n13 = 13
+
     # 只使用畫布高度的 80%
     canvas_size = canvas.height*0.4
     r17 = canvas_size*n17/(n17+n11+n13)
     r11 = canvas_size*n11/(n17+n11+n13)
+    r13 = canvas_size*n13/(n17+n11+n13)
     # 計算各齒輪中心座標
     x17 = x - r17-r11
     y17 = y
 
     x11 = x 
     y11 = y
+
+    x13 = x + r11+r13
+    y13 = y
 
     pa = 20
     # 開始繪製齒輪
@@ -190,6 +200,15 @@ def setgearnumber(e):
     gear11 = Spur(ctx).Gear(x11, y11, r11, n11, pa, "blue")
     ctx.restore()
 
+    ctx.save()
+    ctx.translate(x13, y13)
+    # 右側齒輪轉動 -90 度加上一齒, 可以與原來標線在左側水平的中間齒輪囓合, 但是目前中間齒輪的標線已經轉了 180 度加或減一次
+    # 必須配合兩齒的速比轉換旋轉角, 以便讓中間齒輪與右側齒輪囓合
+    ctx.rotate(-90*deg-math.pi/n13+(180*deg+math.pi/n11)*n11/n13)
+    ctx.translate(-x13, -y13)
+    gear13 = Spur(ctx).Gear(x13, y13, r13, n13, pa, "blue")
+    ctx.restore()
+
 setgearnumber(True)
 
 '''
@@ -197,6 +216,7 @@ div = doc["onegear_div"]
 form = html.FORM()
 input1 = html.INPUT(type="text", id="n1", name="n1", value="13")
 input2 = html.INPUT(type="text", id="n2", name="n2", value="11")
+input3 = html.INPUT(type="text", id="n3", name="n3", value="19")
 div <= input1 + html.BR() + input2 + html.BR() + input3
 '''
 doc['button'].bind('click',setgearnumber)
