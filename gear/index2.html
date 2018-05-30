@@ -176,6 +176,15 @@ ctx = canvas.getContext("2d")
     ctx.translate(-x11, -y11)
     gear11 = Spur(ctx).Gear(x11, y11, r11, n11, pa, "green")
     ctx.restore()
+    
+       ctx.save()
+    ctx.translate(x13, y13)
+    # 右側齒輪轉動 -90 度加上一齒, 可以與原來標線在左側水平的中間齒輪囓合, 但是目前中間齒輪的標線已經轉了 180 度加或減一次
+    # 必須配合兩齒的速比轉換旋轉角, 以便讓中間齒輪與右側齒輪囓合
+    ctx.rotate(-90*deg-math.pi/n13+(180*deg+math.pi/n11)*n11/n13)
+    ctx.translate(-x13, -y13)
+    gear13 = Spur(ctx).Gear(x13, y13, r13, n13, pa, "blue")
+    ctx.restore()
 
 setgearnumber(True)
 
