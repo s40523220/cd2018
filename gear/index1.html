@@ -1,4 +1,3 @@
-
 <html>
 <head>
 </head>
@@ -9,18 +8,13 @@ window.onload=function(){
 brython({debug:1, pythonpath:['./']});
 }
 </script>
+<!-- 以下實際利用  Brython 繪圖-->
 
-<canvas id="onegear" width="800" height="600"></canvas>
-
-<div id="onegear_div" width="800" height="20"></div>
-
-<p><input id="n1" value="13"></input><br />
-<input id="n2" value="11"></input><br />
-<input id="n3" value="17"></input><br />
-<button id="button">Set Number of Gears</button></p>
+<canvas id='gear3' width='800' height='800'></canvas>
+ 
 <script type="text/python3">
+# 導入 browser 模組中的 document, 並設為 doc 變數
 from browser import document as doc
-from browser import html
 import math
 # deg 為角度轉為徑度的轉換因子
 deg = math.pi/180.
@@ -28,7 +22,7 @@ deg = math.pi/180.
 class Spur(object):
     def __init__(self, ctx):
         self.ctx = ctx
-
+ 
     def create_line(self, x1, y1, x2, y2, width=3, fill="red"):
         self.ctx.beginPath()
         self.ctx.lineWidth = width
@@ -42,6 +36,7 @@ class Spur(object):
     # midy 為齒輪圓心 y 座標
     # rp 為節圓半徑, n 為齒數
     # pa 為壓力角 (deg)
+    # rot 為旋轉角 (deg)
     # 已經針對 n 大於等於 52 齒時的繪圖錯誤修正, 因為 base circle 與齒根圓大小必須進行判斷
     def Gear(self, midx, midy, rp, n=20, pa=20, color="black"):
         # 齒輪漸開線分成 15 線段繪製
@@ -94,6 +89,7 @@ class Spur(object):
                 xpt=r*math.sin(alpha-ang)
                 ypt=r*math.cos(alpha-ang)
                 xd=rd*math.sin(-ang)
+ 
                 yd=rd*math.cos(-ang)
                 # i=0 時, 繪線起點由齒根圓上的點, 作為起點
                 if(i==0):
@@ -139,87 +135,80 @@ class Spur(object):
             # lfx 為齒頂圓上的左側 x 座標, lfy 則為 y 座標
             # 下列為齒頂圓上用來近似圓弧的直線
             self.create_line(lfx,lfy,rfx,rfy,fill=color)
-
-canvas = doc['onegear']
+ 
+# 準備在 id="gear3" 的 canvas 中繪圖
+canvas = doc["gear3"]
 ctx = canvas.getContext("2d")
-
-# 以 button 驅動的事件函式
-def setgearnumber(e):
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    x = (canvas.width)/2
-    y = (canvas.height)/2
-    if doc["n1"].value.isdigit():
-        n17 = int(doc["n1"].value)
-    else:
-        n17 = 17
-
-    if doc["n2"].value.isdigit():
-        n11 = int(doc["n2"].value)
-    else:
-        n11 = 11
-
-    if doc["n3"].value.isdigit():
-        n13 = int(doc["n3"].value)
-    else:
-        n13 = 13
-
-    # 只使用畫布高度的 80%
-    canvas_size = canvas.height*0.4
-    r17 = canvas_size*n17/(n17+n11+n13)
-    r11 = canvas_size*n11/(n17+n11+n13)
-    r13 = canvas_size*n13/(n17+n11+n13)
-    # 計算各齒輪中心座標
-    x17 = x - r17-r11
-    y17 = y
-
-    x11 = x 
-    y11 = y
-
-    x13 = x + r11+r13
-    y13 = y
-
-    pa = 20
-    # 開始繪製齒輪
-    # 儲存原有的座標系統
-    ctx.save()
-    # 平移到齒輪圓心
-    ctx.translate(x17, y17)
-    # 以齒輪圓心旋轉 90 度, 讓紅色標線在齒輪右側保持水平
-    ctx.rotate(90*deg)
-    # 平移回原來的座標原點
-    ctx.translate(-x17, -y17)
-    gear17 = Spur(ctx).Gear(x17, y17, r17, n17, pa, "blue")
-    # 回復原有的座標系統
-    ctx.restore()
-
-    ctx.save()
-    ctx.translate(x11, y11)
-    # 中間齒輪轉動 -90 度加上一齒, 可以與左側齒輪囓合
-    ctx.rotate(-90*deg-math.pi/n11)
-    ctx.translate(-x11, -y11)
-    gear11 = Spur(ctx).Gear(x11, y11, r11, n11, pa, "green")
-    ctx.restore()
-
-    ctx.save()
-    ctx.translate(x13, y13)
-    # 右側齒輪轉動 -90 度加上一齒, 可以與原來標線在左側水平的中間齒輪囓合, 但是目前中間齒輪的標線已經轉了 180 度加或減一次
-    # 必須配合兩齒的速比轉換旋轉角, 以便讓中間齒輪與右側齒輪囓合
-    ctx.rotate(-90*deg-math.pi/n13+(180*deg+math.pi/n11)*n11/n13)
-    ctx.translate(-x13, -y13)
-    gear13 = Spur(ctx).Gear(x13, y13, r13, n13, pa, "blue")
-    ctx.restore()
-
-setgearnumber(True)
-
-''
-div = doc["onegear_div"]
-form = html.FORM()
-input1 = html.INPUT(type="text", id="n1", name="n1", value="13")
-input2 = html.INPUT(type="text", id="n2", name="n2", value="11")
-input3 = html.INPUT(type="text", id="n3", name="n3", value="19")
-div <= input1 + html.BR() + input2 + html.BR() + input3
-''
-doc['button'].bind('click',setgearnumber)
+ 
+# 模數決定齒的尺寸大小, 囓合齒輪組必須有相同的模數與壓力角
+# 壓力角 pa 單位為角度
+pa = 20
+# 第1齒輪齒數
+n_g1 = 50
+# 第2齒輪齒數
+n_g2 = 25
+# 第3齒輪齒數
+n_g3 = 0
+# m 為模數, 根據畫布的寬度, 計算適合的模數大小
+m = (0.8*canvas.width)/(n_g1+n_g2+n_g3)
+# 根據模數 m, 計算各齒輪的節圓半徑
+rp_g1 = m*n_g1/2
+rp_g2 = m*n_g2/2
+rp_g3 = m*n_g3/2
+#單一正齒輪繪圖呼叫格式 Spur(ctx).Gear(x, y, r, n, pa, "blue")
+# 開始繪製囓合齒輪輪廓
+# 繪圖第1齒輪的圓心座標, 因為希望繪圖佔去 canvas.width 的 80%, 所以兩邊各預留 10% 距離
+x_g1 = canvas.width*0.1+rp_g1
+# y 方向繪圖區域上方預留 canvas.height 的 20%
+y_g1 = canvas.height*0.2+rp_g1
+# 第2齒輪的圓心座標, 假設排列成水平, 表示各齒輪圓心 y 座標相同
+x_g2 = x_g1 + rp_g1 + rp_g2
+y_g2 = y_g1
+# 第3齒輪的圓心座標
+x_g3 = x_g1 + rp_g1 + 2*rp_g2 + rp_g3
+y_g3 = y_g1
+ 
+# 將第1齒輪順時鐘轉 90 度, 也就是 math.pi/2
+# 使用 ctx.save() 與 ctx.restore() 以確保各齒輪以相對座標進行旋轉繪圖
+ctx.save()
+# translate to the origin of second gear
+ctx.translate(x_g1, y_g1)
+# rotate to engage
+ctx.rotate(math.pi/2)
+# put it back
+ctx.translate(-x_g1, -y_g1)
+# 繪製第一個齒輪輪廓
+Spur(ctx).Gear(x_g1, y_g1, rp_g1, n_g1, pa, "blue")
+ctx.restore()
+ 
+# 將第2齒輪逆時鐘轉 90 度之後, 再多轉一齒, 以便與第1齒輪進行囓合
+ctx.save()
+# translate to the origin of second gear
+ctx.translate(x_g2, y_g2)
+# rotate to engage
+ctx.rotate(-math.pi/2-math.pi/n_g2)
+# put it back
+ctx.translate(-x_g2, -y_g2)
+Spur(ctx).Gear(x_g2, y_g2, rp_g2, n_g2, pa, "black")
+ctx.restore()
+ 
+# 將第3齒輪逆時鐘轉 90 度之後, 再往回轉第2齒輪定位帶動轉角, 然後再逆時鐘多轉一齒, 以便與第2齒輪進行囓合
+ctx.save()
+# translate to the origin of second gear
+ctx.translate(x_g3, y_g3)
+# rotate to engage
+# math.pi+math.pi/n_g2 為第2齒輪從順時鐘轉 90 度之後, 必須配合目前的標記線所作的齒輪 2 轉動角度, 要轉換到齒輪3 的轉動角度
+# 必須乘上兩齒輪齒數的比例, 若齒輪2 大, 則齒輪3 會轉動較快
+# 第1個 -math.pi/2 為將原先垂直的第3齒輪定位線逆時鐘旋轉 90 度
+# -math.pi/n_g3 則是第3齒與第2齒定位線重合後, 必須再逆時鐘多轉一齒的轉角, 以便進行囓合
+# (math.pi+math.pi/n_g2)*n_g2/n_g3 則是第2齒原定位線為順時鐘轉動 90 度, 
+# 但是第2齒輪為了與第1齒輪囓合, 已經距離定位線, 多轉了 180 度, 再加上第2齒輪的一齒角度, 因為要帶動第3齒輪定位, 
+# 這個修正角度必須要再配合第2齒與第3齒的轉速比加以轉換成第3齒輪的轉角, 因此乘上 n_g2/n_g3
+ctx.rotate(-math.pi/2-math.pi/n_g3+(math.pi+math.pi/n_g2)*n_g2/n_g3)
+# put it back
+ctx.translate(-x_g3, -y_g3)
+Spur(ctx).Gear(x_g3, y_g3, rp_g3, n_g3, pa, "red")
+ctx.restore()
 </script>
 <script src="Brython-3.5.1/brython.js"></script>
 <script src="Brython-3.5.1/brython_stdlib.js"></script>
